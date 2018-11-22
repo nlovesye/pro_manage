@@ -1,7 +1,9 @@
 class TestController {
-
+    constructor() {
+        this.name = 'test'
+    }
 }
 
 module.exports = {
-    TestController
+    test: new TestController()
 }

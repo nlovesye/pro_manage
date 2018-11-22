@@ -1,36 +1,27 @@
 'use strict';
 
+const UTIL_PATH = '../utils'
+const CONTRO_PATH = '../controllers'
 const router = require('koa-router')()
 const path = require('path')
 const fs = require('fs')
+const { getRealPath } = require(UTIL_PATH)
 const {
   TestController
 } = require(path.resolve(__dirname, '../controllers/TestController'))
 
-// 获取控制器目录
-const cDirs = fs.readdirSync(path.join(__dirname, '../controllers'))
+// 获取控制器目录文件
+const controFods = fs.readdirSync(path.resolve(__dirname, CONTRO_PATH))
+const controllers = getRealPath(controFods, path.relative(UTIL_PATH, '../controllers'), [])
 
-
-const getRt = (dirs, arr) => {
-  return dirs.reduce((rt, f) => {
-    let info = fs.statSync(path.join(__dirname, `../controllers/${f}`))
-//    rt = [...arr]
-    if (info.isDirectory()) {
-      console.log(f, getRt(fs.readdirSync(path.join(__dirname, '../controllers/' + f))))
-      return [...rt, getRt(fs.readdirSync(path.join(__dirname, '../controllers/' + f))) ? [...getRt(fs.readdirSyncs(path.join(__dirname, `../controllers/${f}`)), arr)] : [...[]]]
-    } else if (info.isFile() && f.endsWith('Controller.js')) {
-      return [...rt, f]
-    } else {
-      return [...rt]
-    }
-  }, arr)
-}
-
-let rt = getRt(cDirs, [])
-
-let info = fs.statSync(path.join(__dirname, `../controllers/${cDirs[1]}`))
-console.log('rt------------:', cDirs, info.isDirectory(), rt)
-
+// console.log('controllers------------:', controllers, path.resolve(controllers[0]))
+controllers.forEach(fPath => {
+  console.log('path', path.dirname(path.relative(path.resolve(__dirname, '../controllers'), fPath)) + `\\${path.parse(fPath).name}`)
+  let obj = require(path.resolve(fPath))
+  for (let c in obj) {
+    console.log('obj:', obj, obj[c].name)
+  }
+})
 
 router.get('/', async (ctx, next) => {
   await ctx.render('index', {
