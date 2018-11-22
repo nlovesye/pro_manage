@@ -10,21 +10,26 @@ const {
 // 获取控制器目录
 const cDirs = fs.readdirSync(path.join(__dirname, '../controllers'))
 
-// let rt = getRt(cDirs)
 
-const getRt = (dirs) => {
+const getRt = (dirs, arr) => {
   return dirs.reduce((rt, f) => {
     let info = fs.statSync(path.join(__dirname, `../controllers/${f}`))
+//    rt = [...arr]
     if (info.isDirectory()) {
-      return [...rt, getRt(fs.readFileSync(path.join(__dirname, `../controllers/${f}`)))]
-    } else if (info.isFile() && f.endWith()) {
-      
+      console.log(f, getRt(fs.readdirSync(path.join(__dirname, '../controllers/' + f))))
+      return [...rt, getRt(fs.readdirSync(path.join(__dirname, '../controllers/' + f))) ? [...getRt(fs.readdirSyncs(path.join(__dirname, `../controllers/${f}`)), arr)] : [...[]]]
+    } else if (info.isFile() && f.endsWith('Controller.js')) {
+      return [...rt, f]
+    } else {
+      return [...rt]
     }
-  }, [])
+  }, arr)
 }
 
+let rt = getRt(cDirs, [])
+
 let info = fs.statSync(path.join(__dirname, `../controllers/${cDirs[1]}`))
-console.log('rt------------:', cDirs, info.isDirectory())
+console.log('rt------------:', cDirs, info.isDirectory(), rt)
 
 
 router.get('/', async (ctx, next) => {
