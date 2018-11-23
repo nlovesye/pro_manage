@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 
-// 遍历文件夹 Controller.js 结尾的文件的路径
+// 遍历文件夹 Controller.js 结尾的文件的绝对路径
 const getRealPath = (fods, basePath, target) => {
     return fods.reduce((rt, cur) => {
         let realPath = path.resolve(__dirname, basePath, cur)

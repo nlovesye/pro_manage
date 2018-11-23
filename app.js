@@ -5,10 +5,10 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-// const db = require('./db')
+const db = require('./db')
+const BaseController = require('./routes/BaseController')
 
 const index = require('./routes/index')
-const users = require('./routes/users')
 
 // error handler
 onerror(app)
@@ -33,9 +33,11 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-// routes
+console.log(BaseController)
+app.use(BaseController.run)
+
+// 注入路由控制器
 app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

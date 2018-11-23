@@ -1,6 +1,7 @@
 const config = require('../config/db')
 const MongoClient = require('mongodb').MongoClient
 
+/* Mongodb数据库类 */
 class Db {
     /* 单例 */
     static getInstance() {
@@ -25,7 +26,7 @@ class Db {
                         console.log(`----数据库连接失败----`)
                         reject(err)
                     } else {
-                        console.log(`----数据库连接成功----[${config.dbName}]`)
+                        console.log(`----数据库连接成功----数据库名称:[${config.dbName}]`)
                         this.dbClient = client.db(config.dbName)
                         resolve(this.dbClient)
                     }
