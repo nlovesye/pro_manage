@@ -1,5 +1,13 @@
-const GET_test = async (ctx, next) => {
-    ctx.body = 'hello'
+const GET_ = async (ctx, next) => {
+    console.log('ctx', ctx.request.header.host)
+    let rt = await ctx.mdb.find('user', {})
+    ctx.body = {
+        success: true,
+        msg: 'this is test msg!',
+        data: rt,
+        reqHost: ctx.request.header.host.split(':')[0],
+        port: ctx.request.header.host.split(':')[1]
+    }
 }
 
 const POST_ = async (ctx, next) => {
@@ -10,6 +18,6 @@ const POST_ = async (ctx, next) => {
 }
 
 module.exports = {
-    GET_test,
+    GET_,
     POST_
 }
