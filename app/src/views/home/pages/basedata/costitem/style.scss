@@ -1,0 +1,18 @@
+.page-basedata-costitem{
+    .row{
+        margin: 10px auto;
+    }
+    .col-btn{
+        display: flex;
+        justify-content: flex-end;
+        .ivu-btn{
+            margin-left: 12px;
+        }
+    }
+    .pop-del{
+        z-index: 700;
+        .ivu-icon{
+            display: none;
+        }
+    }
+}

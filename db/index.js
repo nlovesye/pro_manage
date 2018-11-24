@@ -21,17 +21,19 @@ class Db {
     connect() {
         return new Promise((resolve, reject) => {
             if (!this.dbClient) {
+                // console.log(2)
                 MongoClient.connect(config.dbUrl, (err, client) => {
                     if (err) {
                         console.log(`----数据库连接失败----`)
                         reject(err)
                     } else {
-                        console.log(`----数据库连接成功----数据库名称:[${config.dbName}]`)
+                        console.log(`----MongoDB数据库连接成功----数据库名称:[${config.dbName}]`)
                         this.dbClient = client.db(config.dbName)
                         resolve(this.dbClient)
                     }
                 })
             } else {
+                // console.log(2)
                 resolve(this.dbClient)
             }
         })
@@ -62,6 +64,7 @@ class Db {
                 let rt = db.collection(cName).find(json)
                 rt.toArray((err, docs) => {
                     if (err) {
+                        console.log('查询出错----')
                         reject(err)
                     } else {
                         resolve(docs)
@@ -71,6 +74,21 @@ class Db {
         })
     }
     /* 查询数据 */
+
+    /* 查询一条数据 */
+    findOne(cName, json) {
+        return new Promise((resolve, reject) => {
+            this.connect().then(async db => {
+                try {
+                    let rt = await db.collection(cName).findOne(json)
+                    resolve(rt)
+                } catch (error) {
+                    reject(error)     
+                }
+            })
+        })
+    }
+    /* 查询一条数据 */
 
     /* 更新数据 */
     update(cName, targetJson, newJson) {

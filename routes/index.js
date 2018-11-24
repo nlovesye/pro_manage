@@ -7,11 +7,17 @@ const path = require('path')
 const fs = require('fs')
 const { getRealPath } = require(UTIL_PATH)
 const { API_VESION } = require('../config')
+// jwt中间件
+const authJwt = require('../middleware/auth/jwt')
 // 获取控制器目录文件
 let controFods = fs.readdirSync(path.resolve(__dirname, CONTRO_PATH))
 const controllers = getRealPath(controFods, path.relative(UTIL_PATH, CONTRO_PATH), [])
 
 // console.log('controllers------------:', controllers, path.resolve(controllers[0]))
+
+// jwt验证
+router.all(`/${API_VESION}/api*`, authJwt())
+
 // api接口控制器设置
 controllers.forEach(rPath => {
   // console.log('path-----', path.dirname(path.relative(path.resolve(__dirname, CONTRO_PATH), rPath)).replace('\\', '/'), path.basename(rPath).replace('Controller.js', ''))

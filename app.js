@@ -5,8 +5,9 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const cors = require('koa2-cors')
 const db = require('./db')
-const BaseController = require('./routes/BaseController')
+const connectDb = require('./middleware/db/mongoDB')
 
 const index = require('./routes/index')
 
@@ -14,12 +15,19 @@ const index = require('./routes/index')
 onerror(app)
 
 // middlewares
+app.use(cors({
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE'],
+  allowHeaders: ['Content-type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous']
+}))
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
 app.use(json())
 app.use(logger())
-app.use(require('koa-static')(__dirname + '/public'))
+app.use(require('koa-static')(__dirname + '/static'))
+// 连接mongoDB数据库
+app.use(connectDb(db))
 
 app.use(views(__dirname + '/views', {
   extension: 'pug'
@@ -33,14 +41,12 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-console.log(BaseController)
-app.use(BaseController.run)
 
 // 注入路由控制器
 app.use(index.routes(), index.allowedMethods())
 
 // error-handling
-app.on('error', (err, ctx) => {
+app.on('error', async (err, ctx) => {
   console.error('server error', err, ctx)
 });
 
