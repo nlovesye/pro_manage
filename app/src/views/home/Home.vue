@@ -161,10 +161,6 @@ export default {
       conf.openPage.forEach(name => {
         this.selectNav(name)
       })
-      this.$Message.config({
-        top: 70,
-        duration: 3
-      })
     },
     /* token到期确定按钮事件 */
     timerOk () {
@@ -174,12 +170,8 @@ export default {
     /* 顶部栏设置事件 */
     headerSetting (name) {
       if (name === 'logout') {
-        window.localStorage.removeItem('access_token')
-        window.localStorage.removeItem('refresh_token')
-        window.localStorage.removeItem('navs')
-        window.localStorage.removeItem('expires_in')
-        window.localStorage.removeItem('getTokenTime')
         window.localStorage.removeItem('username')
+        window.localStorage.removeItem('token')
         this.$router.push('/login')
       }
     },
@@ -240,17 +232,7 @@ export default {
     this.init()
   },
   beforeRouteEnter (to, from, next) {
-    next(vm => {
-      let now = Date.now()
-      let expiresIn = parseInt(window.localStorage.getItem('expires_in'))
-      let getTokenTime = parseInt(window.localStorage.getItem('getTokenTime'))
-      if (vm.expiresTimer) {
-        clearTimeout(vm.expiresTimer)
-      }
-      vm.expiresTimer = setTimeout(() => {
-        vm.modalTimeout = true
-      }, expiresIn * 1000 + getTokenTime - now)
-    })
+    next(vm => {})
   }
 }
 </script>

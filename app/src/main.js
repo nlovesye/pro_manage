@@ -15,6 +15,10 @@ Vue.config.productionTip = false
 Vue.prototype.oAxios = http
 Vue.prototype.expiresTimer = null
 Vue.prototype.$Message = Message
+Vue.prototype.$Message.config({
+  top: 70,
+  duration: 3
+})
 Vue.component('Poptip', Poptip)
 Vue.component('Button', Button)
 

@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const crypto = require('crypto')
 
 // 遍历文件夹 Controller.js 结尾的文件的绝对路径
 const getRealPath = (fods, basePath, target) => {
@@ -18,6 +19,22 @@ const getRealPath = (fods, basePath, target) => {
     }, target)
 }
 
+const sha1hash = function (content) {
+    var hash = crypto.createHash('sha1')
+    hash.update(content)
+    return hash.digest('hex')
+}
+
+const md5hash = function (str) {
+    var md5sum = crypto.createHash('md5')
+    md5sum.update(str)
+    str = md5sum.digest('hex')
+    return str
+}
+
+
 module.exports = {
-    getRealPath
+    getRealPath,
+    sha1hash,
+    md5hash
 }

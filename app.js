@@ -1,3 +1,5 @@
+'use strict';
+
 const Koa = require('koa')
 const app = new Koa()
 const views = require('koa-views')
@@ -8,24 +10,37 @@ const logger = require('koa-logger')
 const cors = require('koa2-cors')
 const db = require('./db')
 const connectDb = require('./middleware/db/mongoDB')
+const catchError = require('./middleware/catchError')
+const responseData = require('./middleware/responseData')
+const koaJwt = require('koa-jwt')
 
 const index = require('./routes/index')
 
 // error handler
 onerror(app)
 
+app.secret = 'jwt_nloves'
+
 // middlewares
 app.use(cors({
   credentials: true,
   allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE'],
-  allowHeaders: ['Content-type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous']
+  allowHeaders: ['Content-type', 'Authorization', 'Accept', 'x-access-token', 'anonymous']
 }))
 app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
+  enableTypes: ['json', 'form', 'text']
 }))
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/static'))
+// 返回数据格式
+app.use(responseData())
+// 错误捕获
+app.use(catchError())
+// koa-jwt验证
+app.use(koaJwt({ secret: app.secret }).unless({
+  path: [/^\/v1.0\/api\/user\/login/]
+}))
 // 连接mongoDB数据库
 app.use(connectDb(db))
 

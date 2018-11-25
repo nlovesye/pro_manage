@@ -1,22 +1,6 @@
 <template>
     <div class='page-test'>
-      <Form ref='formInline' :model='formInline' :rules='ruleInline' inline>
-          <FormItem prop='username'>
-              <Input type='text' v-model='formInline.username' placeholder='Username'>
-                  <Icon type='ios-person-outline' slot='prepend'></Icon>
-              </Input>
-          </FormItem>
-          <FormItem prop='pwd'>
-              <Input type='password' v-model='formInline.pwd' placeholder='Password'>
-                  <Icon type='ios-lock-outline' slot='prepend'></Icon>
-              </Input>
-          </FormItem>
-          <FormItem>
-              <Button type='primary' @click='test'>Signin</Button>
-          </FormItem>
-      </Form>
-      <Button @click='test'>测试</Button>
-      <Button type='primary'>Primary</Button>
+      <Button @click='test' type='primary' :loading='loading'>测试接口数据</Button>
     </div>
 </template>
 
@@ -31,6 +15,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       formInline: {
         username: 'nloves',
         pwd: '123456'
@@ -61,15 +46,19 @@ export default {
   },
   methods: {
     async test () {
+      this.loading = true
+      let res = null
       try {
-        let res = await this.oAxios.post(
-          'http://localhost:7000/v1.0/api/user/login?access_token=5647',
-          this.formInline
-        )
-        console.log('res', res)
+        res = await this.oAxios.post('/test', this.formInline)
+        if (res.success) {
+          this.$Message.success(res.msg)
+        } else {
+          throw Error('获取数据失败')
+        }
       } catch (error) {
-        console.log(error)
+        this.$Message.error(error.msg || res.msg || '获取数据失败')
       }
+      this.loading = false
     }
   }
 }

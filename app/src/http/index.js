@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BasicAuth = 'Basic YXBwOjEyMzQ1Ng=='
+const BasicAuth = 'Basic token'
 
 // console.log(process.env.NODE_ENV)
 const AXIOSCONFIG = process.env.NODE_ENV === 'development' ? {
@@ -7,7 +7,7 @@ const AXIOSCONFIG = process.env.NODE_ENV === 'development' ? {
   withCredentials: true
 } : {
   // proxy: 'scm.smartcomma.com',
-  baseURL: 'http://scm.smartcomma.com/api/',
+  baseURL: 'http://nloves.tpddns.cn:7000/v1.0/api/',
   timeout: 1000 * 10,
   withCredentials: true
 }
@@ -17,16 +17,17 @@ let http = axios.create(AXIOSCONFIG)
 /* 请求拦截器 */
 http.interceptors.request.use(config => {
   let newConfig = config
-  if (config.url === '/oauth/token') {
+  if (config.url === '/user/login') {
     newConfig = Object.assign({}, config, {
       headers: {
         ...config.headers,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         'Authorization': BasicAuth
       }
     })
   } else {
-    const token = window.localStorage.getItem('access_token')
+    const token = window.localStorage.getItem('token')
     newConfig = Object.assign({}, config, {
       headers: {
         ...config.headers,

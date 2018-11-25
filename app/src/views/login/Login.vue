@@ -14,7 +14,7 @@
               </i-input>
           </FormItem>
           <FormItem>
-              <Button type="primary" @click="login('form')" long>登录</Button>
+              <Button type="primary" @click="login('form')" long :loading="loading">登录</Button>
           </FormItem>
       </Form>
     </Card>
@@ -24,12 +24,12 @@
 <script>
 import { Form, FormItem, Button, Input, Icon, Card } from 'iview'
 import { md5hash } from '@/utils/hash'
-import qs from 'qs'
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'login',
   data () {
     return {
+      loading: false,
       fData: {
         userName: '',
         pwd: ''
@@ -63,37 +63,37 @@ export default {
   },
   methods: {
     ...mapActions([
-      'initNavs'
+      'initNavs',
+      'loginSucess'
     ]),
     async login (refName) {
-      this.$refs[refName].validate(flag => {
+      this.$refs[refName].validate(async flag => {
         if (flag) {
+          // let formData = new FormData()
+          // formData.append('username', this.fData.userName)
+          // formData.append('pwd', md5hash(this.fData.pwd))
           let reqData = {
-            grant_type: 'password',
-            remember: false,
             username: this.fData.userName,
-            password: md5hash(this.fData.pwd)
+            pwd: md5hash(this.fData.pwd)
           }
-          this.oAxios.post('/oauth/token', qs.stringify(reqData))
-            .then(res => {
-              let now = Date.now()
-              this.initNavs([...res.permissions])
-              window.localStorage.setItem('access_token', res.access_token)
-              window.localStorage.setItem('refresh_token', res.refresh_token)
-              window.localStorage.setItem('navs', JSON.stringify(this.base.navs))
-              window.localStorage.setItem('expires_in', res.expires_in)
-              window.localStorage.setItem('username', res.username)
-              window.localStorage.setItem('getTokenTime', now)
-              // this.$store.dispatch('initNavs', [...res.permissions])
+          let rt = null
+          this.loading = true
+          try {
+            rt = await this.oAxios.post('/user/login', reqData)
+            if (rt && rt.success) {
+              await this.loginSucess(rt.data.username)
+              window.localStorage.setItem('username', rt.data.username)
+              window.localStorage.setItem('token', rt.data.token)
+              this.$Message.success('登陆成功')
               this.$router.push('/home')
-            })
-            .catch(err => {
-              console.log(err)
-              this.$Message.error(err.msg || '登录失败')
-            })
-        } else {
-
-        }
+            } else {
+              throw new Error(rt.msg || '登录失败')
+            }
+          } catch (error) {
+            this.$Message.error(error.msg || rt.msg)
+          }
+          this.loading = false
+        } else {}
       })
     }
   }

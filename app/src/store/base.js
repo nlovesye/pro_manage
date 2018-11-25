@@ -13,6 +13,9 @@ export default {
     isCollepsed: false
   },
   mutations: {
+    setLogin (state, username) {
+      state.userName = username
+    },
     initNavs (state, navs) {
       state.navs = navs
     },
@@ -21,6 +24,9 @@ export default {
     }
   },
   actions: {
+    async loginSucess ({ commit }, username) {
+      commit('setLogin', username)
+    },
     initNavs ({ commit }, navs) {
       commit('initNavs', navs)
     },

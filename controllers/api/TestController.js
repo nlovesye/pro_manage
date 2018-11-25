@@ -1,5 +1,4 @@
 const GET_ = async (ctx, next) => {
-    console.log('ctx', ctx.request.header.host)
     let rt = await ctx.mdb.find('user', {})
     ctx.body = {
         success: true,
@@ -11,8 +10,7 @@ const GET_ = async (ctx, next) => {
 }
 
 const POST_ = async (ctx, next) => {
-    console.log(ctx.jsonResult)
-    ctx.jsonResult({
+    ctx.jsonResp({
         info: 'hello'
     })
 }
