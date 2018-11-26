@@ -86,6 +86,7 @@
         </Content>
       </Layout>
     </Layout>
+    <Footer class="home-footer">2018-2019 &copy; nlovesye</Footer>
   </Layout>
 </template>
 
@@ -93,6 +94,7 @@
 import {
   Layout,
   Header,
+  Footer,
   Sider,
   Menu,
   Content,
@@ -117,6 +119,7 @@ export default {
   components: {
     Layout,
     Header,
+    Footer,
     Sider,
     Menu,
     Content,

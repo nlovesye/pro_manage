@@ -45,6 +45,12 @@
         position: relative;
         .home-sider {
             background-color: #313131;
+            position: relative;
+
+            &>.ivu-layout-sider-trigger {
+                position: absolute;
+                bottom: 0;
+            }
 
             .ivu-layout-sider-children {
                 padding-bottom: 48px;
@@ -125,5 +131,12 @@
                 }
             }
         }
+    }
+
+    .home-footer{
+        background-color: #112436;
+        height: 52px;
+        padding: 0 20px;
+        line-height: 52px;
     }
 }

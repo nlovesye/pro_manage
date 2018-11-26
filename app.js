@@ -39,7 +39,7 @@ app.use(responseData())
 app.use(catchError())
 // koa-jwt验证
 app.use(koaJwt({ secret: app.secret }).unless({
-  path: [/^\/v1.0\/api\/user\/login/]
+  path: [/^\//, /^\/v1.0\/api\/user\/login/]
 }))
 // 连接mongoDB数据库
 app.use(connectDb(db))

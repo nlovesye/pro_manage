@@ -80,18 +80,19 @@ export default {
           this.loading = true
           try {
             rt = await this.oAxios.post('/user/login', reqData)
-            if (rt && rt.success) {
-              await this.loginSucess(rt.data.username)
-              window.localStorage.setItem('username', rt.data.username)
-              window.localStorage.setItem('token', rt.data.token)
-              this.$Message.success('登陆成功')
-              this.$router.push('/home')
-            } else {
-              throw new Error(rt.msg || '登录失败')
+            if (!rt.success) {
+              throw new Error('账号或密码错误')
             }
           } catch (error) {
+            this.loading = false
             this.$Message.error(error.msg || rt.msg)
+            return
           }
+          await this.loginSucess(rt.data.username)
+          window.localStorage.setItem('username', rt.data.username)
+          window.localStorage.setItem('token', rt.data.token)
+          this.$Message.success('登陆成功')
+          this.$router.push('/home')
           this.loading = false
         } else {}
       })
