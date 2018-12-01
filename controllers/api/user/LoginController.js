@@ -8,6 +8,16 @@ const POST_ = async (ctx, next) => {
         pwd
     } = ctx.request.body
     let user = await ctx.mdb.findOne('user', { username, pwd })
+    let routers = await ctx.mdb.find('routers', {
+        $or: [{
+            roles: user.role
+        }]
+    })
+    routers = routers.map(r => ({
+        path: r.path,
+        key: r.key,
+        name: r.name
+    }))
     if (user) {
         const userToken = {
             username,
@@ -17,7 +27,8 @@ const POST_ = async (ctx, next) => {
         const token = jwt.sign(userToken, ctx.app.secret, { expiresIn })
         ctx.jsonResp({
             username: user.username,
-            token
+            token,
+            routers
         }, {
             msg: '登陆成功'
         })

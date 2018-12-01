@@ -50,7 +50,7 @@ http.interceptors.response.use(response => {
   return response.data
 }, error => {
   console.log('[响应拦截器错误]', error)
-  throw error
+  return error
   // return Promise.reject(error)
 })
 

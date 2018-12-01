@@ -58,10 +58,10 @@ class Db {
     /* 插入数据 */
 
     /* 查询数据 */
-    find(cName, json) {
+    find(cName, json, projection = undefined) {
         return new Promise((resolve, reject) => {
             this.connect().then(db => {
-                let rt = db.collection(cName).find(json)
+                let rt = db.collection(cName).find(json, projection)
                 rt.toArray((err, docs) => {
                     if (err) {
                         console.log('查询出错----')

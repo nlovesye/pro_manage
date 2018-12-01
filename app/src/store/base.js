@@ -4,17 +4,23 @@ try {
 } catch (err) {
   navs = []
 }
+// 默认路由
+const routers = []
 
 export default {
   state: {
     userName: window.localStorage.getItem('username') || '游客',
     navs,
     siderbarWidth: 260,
-    isCollepsed: false
+    isCollepsed: false,
+    routers
   },
   mutations: {
     setLogin (state, username) {
       state.userName = username
+    },
+    setRouter (state, routers) {
+      state.routers = [...routers]
     },
     initNavs (state, navs) {
       state.navs = navs
@@ -24,8 +30,10 @@ export default {
     }
   },
   actions: {
-    async loginSucess ({ commit }, username) {
-      commit('setLogin', username)
+    async loginSucess ({ commit }, payload) {
+      console.log('loginSuccess', payload)
+      commit('setLogin', payload.username)
+      commit('setRouter', payload.routers)
     },
     initNavs ({ commit }, navs) {
       commit('initNavs', navs)

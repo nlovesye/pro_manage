@@ -21,7 +21,7 @@
             @on-click="headerSetting"
           >
             <a href="javascript:void(0)">
-              {{$store.state.base.userName || '游客'}}
+              {{base.userName || '游客'}}
               <Icon type="ios-arrow-down"></Icon>
             </a>
             <DropdownMenu slot="list">
@@ -98,10 +98,8 @@ import {
   Sider,
   Menu,
   Content,
-  Submenu,
   Breadcrumb,
   BreadcrumbItem,
-  MenuItem,
   Icon,
   Dropdown,
   DropdownMenu,
@@ -123,10 +121,8 @@ export default {
     Sider,
     Menu,
     Content,
-    Submenu,
     Breadcrumb,
     BreadcrumbItem,
-    MenuItem,
     Icon,
     Dropdown,
     DropdownMenu,

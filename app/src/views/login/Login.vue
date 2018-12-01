@@ -69,9 +69,6 @@ export default {
     async login (refName) {
       this.$refs[refName].validate(async flag => {
         if (flag) {
-          // let formData = new FormData()
-          // formData.append('username', this.fData.userName)
-          // formData.append('pwd', md5hash(this.fData.pwd))
           let reqData = {
             username: this.fData.userName,
             pwd: md5hash(this.fData.pwd)
@@ -88,7 +85,8 @@ export default {
             this.$Message.error(error.msg || rt.msg)
             return
           }
-          await this.loginSucess(rt.data.username)
+          await this.loginSucess(rt.data)
+          this.setRouter(this.base.routers)
           window.localStorage.setItem('username', rt.data.username)
           window.localStorage.setItem('token', rt.data.token)
           this.$Message.success('登陆成功')
@@ -96,6 +94,28 @@ export default {
           this.loading = false
         } else {}
       })
+    },
+    setRouter (rts) {
+      // console.log('st', this.$router, this.$router.options, rts)
+      if (rts && rts.length) {
+        rts.forEach((r, index) => {
+          console.log(r)
+          let p = r.key === 'TASK' ? 'tasks' : r.path
+          let pt = r.key === 'TASK' ? '@/views/home/pages/basedata/costitem/Index.vue' : r.fPath
+          r = {
+            name: r.name,
+            path: p,
+            components: {
+              [r.key]: () => import(/* webpackChunkName: "任务" */ `${pt}`)
+            }
+          }
+          this.$router.options.routes[1].children.push(r)
+        })
+        this.$router.addRoutes(this.$router.options.routes)
+        console.log('result', this.$router.options.routes[1].children)
+      } else {
+        console.log('路由数据有误')
+      }
     }
   }
 }
