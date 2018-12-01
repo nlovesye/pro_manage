@@ -228,7 +228,7 @@ export default {
     }
   },
   mounted () {
-    this.init()
+    // this.init()
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {})

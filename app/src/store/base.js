@@ -19,8 +19,9 @@ export default {
     setLogin (state, username) {
       state.userName = username
     },
-    setRouter (state, routers) {
-      state.routers = [...routers]
+    setRouter (state, payload) {
+      console.log('set', payload._)
+      state.routers = [...payload.res.routers]
     },
     initNavs (state, navs) {
       state.navs = navs
@@ -30,10 +31,13 @@ export default {
     }
   },
   actions: {
-    async loginSucess ({ commit }, payload) {
+    async loginSucess ({ commit }, payload = {}) {
       console.log('loginSuccess', payload)
-      commit('setLogin', payload.username)
-      commit('setRouter', payload.routers)
+      commit('setLogin', payload.res.username)
+      commit('setRouter', payload)
+    },
+    setRouter () {
+
     },
     initNavs ({ commit }, navs) {
       commit('initNavs', navs)

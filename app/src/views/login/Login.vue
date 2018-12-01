@@ -85,7 +85,10 @@ export default {
             this.$Message.error(error.msg || rt.msg)
             return
           }
-          await this.loginSucess(rt.data)
+          await this.loginSucess({
+            res: rt.data,
+            _: this
+          })
           this.setRouter(this.base.routers)
           window.localStorage.setItem('username', rt.data.username)
           window.localStorage.setItem('token', rt.data.token)
