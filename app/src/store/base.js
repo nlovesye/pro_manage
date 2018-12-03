@@ -1,11 +1,21 @@
+import routerComponent from '@/data/routerComponent'
+
 let navs = window.localStorage.getItem('navs') || '[]'
+// 默认路由
+let routers = window.localStorage.getItem('routers') || '[]'
 try {
+  routers = JSON.parse(routers)
   navs = JSON.parse(navs)
 } catch (err) {
+  routers = []
   navs = []
 }
-// 默认路由
-const routers = []
+
+// 设置路由组件
+const setComponents = (arr) => arr.map(item => {
+  item.components = routerComponent[item.key]
+  return item
+})
 
 export default {
   state: {
@@ -20,8 +30,29 @@ export default {
       state.userName = username
     },
     setRouter (state, payload) {
-      console.log('set', payload._)
-      state.routers = [...payload.res.routers]
+      let navs = [payload._.$router.options.routes[1].children[0], ...payload.routers]
+      // 将二级菜单提出home级路由
+      let dealRouters = payload.routers.reduce((rt, cur) => {
+        if (cur.children && cur.children.length) {
+          return [...rt, ...cur.children]
+        } else {
+          return [...rt, cur]
+        }
+      }, [])
+      dealRouters = setComponents(dealRouters)
+      dealRouters.forEach(r => {
+        payload._.$router.options.routes[1].children.push(r)
+      })
+      payload._.$router.addRoutes(payload._.$router.options.routes)
+      window.localStorage.setItem('routers', JSON.stringify(payload.routers))
+      window.localStorage.setItem('navs', JSON.stringify(navs))
+      state.routers = [...payload.routers]
+      state.navs = navs
+    },
+    logout (state, payload) {
+      state.userName = '游客'
+      state.navs = []
+      state.routers = []
     },
     initNavs (state, navs) {
       state.navs = navs
@@ -32,12 +63,15 @@ export default {
   },
   actions: {
     async loginSucess ({ commit }, payload = {}) {
-      console.log('loginSuccess', payload)
+      // console.log('loginSuccess', payload)
       commit('setLogin', payload.res.username)
+    },
+    async setRouter ({ commit }, payload = {}) {
       commit('setRouter', payload)
     },
-    setRouter () {
-
+    // 退出登录
+    async logout ({ commit }, payload = null) {
+      commit('logout', payload)
     },
     initNavs ({ commit }, navs) {
       commit('initNavs', navs)

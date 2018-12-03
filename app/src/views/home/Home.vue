@@ -51,7 +51,7 @@
         >
           <TreeItem
             v-for='item in base.navs'
-            :key='item.id'
+            :key='item.key'
             :node='item'
           />
         </Menu>
@@ -77,9 +77,9 @@
               :label="item.name"
               v-for="item in openPages"
               :key="item.path"
-              :name="item.routerName"
+              :name="item.key"
             >
-              <router-view class="page-router-view" :name="item.routerName" />
+              <router-view class="page-router-view" :name="item.key" />
             </TabPane>
           </Tabs>
           <div v-else>hello</div>
@@ -110,8 +110,6 @@ import {
 } from 'iview'
 import { mapState, mapActions } from 'vuex'
 import TreeItem from './TreeItem'
-import routerData from '@/data/routerData.js'
-import conf from '@/config/index.js'
 export default {
   name: 'home',
   components: {
@@ -154,12 +152,12 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setSiderbar'
+      'setSiderbar',
+      'logout',
+      'setRouter'
     ]),
     init () {
-      conf.openPage.forEach(name => {
-        this.selectNav(name)
-      })
+      // console.log('init')
     },
     /* token到期确定按钮事件 */
     timerOk () {
@@ -167,63 +165,69 @@ export default {
       this.modalTimeout = false
     },
     /* 顶部栏设置事件 */
-    headerSetting (name) {
+    async headerSetting (name) {
       if (name === 'logout') {
         window.localStorage.removeItem('username')
         window.localStorage.removeItem('token')
+        window.localStorage.removeItem('routers')
+        window.localStorage.removeItem('navs')
+        await this.logout()
         this.$router.push('/login')
       }
     },
     /* 导航菜单点击事件 */
-    selectNav (name) {
-      console.log('进入路由页面:', name)
-      if (routerData[name]) {
-        this.curPageName = routerData[name].name
-        this.activeTab = name
-        if (!this.openPages.some(item => item.path === routerData[name].path)) {
-          this.openPages.push({
-            ...routerData[name],
-            routerName: name
-          })
-        } else {}
-        this.$router.push(routerData[name])
-      } else {
-        this.activeTab = this.noFoundObj.routerName
-        if (!this.openPages.some(item => item.path === this.noFoundObj.path)) {
-          this.openPages.push(this.noFoundObj)
-        } else {}
-        this.$router.push(this.noFoundObj)
-        console.log('开发中页面...')
-      }
+    selectNav (routerKey) {
+      console.log('进入路由页面:', routerKey)
+      let target = this.getRouterObj(this.base.navs, routerKey)
+      // console.log('target', target)
+      this.curPageName = target.name
+      this.activeTab = routerKey
+      if (!this.openPages.some(item => item.key === target.key)) {
+        this.openPages.push(target)
+      } else {}
+      this.$router.push({
+        path: target.path,
+        name: target.name
+      })
+    },
+    // 寻找对应路由
+    getRouterObj (arr = [], routerKey, rt = null) {
+      arr.forEach(item => {
+        if (item.children && item.children.length && !rt) {
+          rt = this.getRouterObj(item.children, routerKey, rt)
+        }
+        if (item.key === routerKey) {
+          rt = item
+        }
+      })
+      return rt
     },
     /* 收缩菜单 */
     doCollapse (flag) {
       // console.log(flag, this.base.siderbarWidth)
     },
     /* 关闭页面tab */
-    tabClose (name) {
+    tabClose (routerKey) {
       let closeIndex = 0
       this.openPages = this.openPages.filter((item, index) => {
-        closeIndex = item.routerName === name ? index - 1 : closeIndex
-        return item.routerName !== name
+        closeIndex = item.key === routerKey ? index - 1 : closeIndex
+        return item.key !== routerKey
       })
-      if (this.activeTab === name && closeIndex > -1) {
-        this.tabClick(this.openPages[closeIndex].routerName)
+      if (this.activeTab === routerKey && closeIndex > -1) {
+        this.tabClick(this.openPages[closeIndex].key)
       }
     },
     /* 点击tab */
-    tabClick (name) {
+    tabClick (routerKey) {
       if (this.activeTab !== name) {
-        if (this.activeTab !== this.noFoundObj.routerName) {
-          this.activeTab = name
-          this.curPageName = this.noFoundObj.name
-          this.$router.push(this.noFoundObj)
-          return
-        }
-        this.activeTab = name
-        this.activeMenu = name
-        this.curPageName = routerData[name].name
-        this.$router.push(routerData[name])
+        let target = this.getRouterObj(this.base.navs, routerKey)
+        this.activeTab = routerKey
+        this.activeMenu = routerKey
+        this.curPageName = target.name
+        this.$router.push({
+          path: target.path,
+          name: target.name
+        })
       }
     }
   },

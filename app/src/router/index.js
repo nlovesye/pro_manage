@@ -17,7 +17,7 @@ export default new Router({
       component: Home,
       children: [
         {
-          key: 'INDEX',
+          key: 'HOME',
           path: '',
           name: '首页',
           components: {

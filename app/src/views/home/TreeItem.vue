@@ -1,7 +1,7 @@
 <template>
   <Submenu
     v-if='node.children && node.children.length && (!node.children.some(item => item.type === "view"))'
-    :name='node.code'
+    :name='node.key'
   >
     <template slot='title'>
       <Icon type="ios-navigate"></Icon>
@@ -9,24 +9,23 @@
     </template>
     <tree-item
       v-for='(item, index) in node.children'
-      :key='item.id || index'
+      :key='item.key || index'
       :list='node.children'
       :node='item'
     />
   </Submenu>
   <menu-item
     v-else-if='node.type !== "view" && node.type !== "menu_hide"'
-    :key='node.id'
-    :name='node.code'
+    :key='node.key'
+    :name='node.key'
   >
-    <Icon type="md-home" v-if='node.code === "HOME"'></Icon>
+    <Icon type="md-home" v-if='node.key === "HOME"'></Icon>
     <span v-if="!base.isCollepsed">{{node.name || ''}}</span>
   </menu-item>
 </template>
 
 <script>
 import {
-  Menu,
   Submenu,
   MenuItem,
   Icon
@@ -35,7 +34,6 @@ import { mapState } from 'vuex'
 export default {
   name: 'tree-item',
   components: {
-    Menu,
     Submenu,
     MenuItem,
     Icon

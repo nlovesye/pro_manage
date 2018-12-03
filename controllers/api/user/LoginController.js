@@ -16,7 +16,8 @@ const POST_ = async (ctx, next) => {
     routers = routers.map(r => ({
         path: r.path,
         key: r.key,
-        name: r.name
+        name: r.name,
+        children: r.children
     }))
     if (user) {
         const userToken = {

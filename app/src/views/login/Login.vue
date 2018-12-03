@@ -64,7 +64,8 @@ export default {
   methods: {
     ...mapActions([
       'initNavs',
-      'loginSucess'
+      'loginSucess',
+      'setRouter'
     ]),
     async login (refName) {
       this.$refs[refName].validate(async flag => {
@@ -89,7 +90,10 @@ export default {
             res: rt.data,
             _: this
           })
-          this.setRouter(this.base.routers)
+          await this.setRouter({
+            routers: rt.data.routers,
+            _: this
+          })
           window.localStorage.setItem('username', rt.data.username)
           window.localStorage.setItem('token', rt.data.token)
           this.$Message.success('登陆成功')
@@ -97,28 +101,6 @@ export default {
           this.loading = false
         } else {}
       })
-    },
-    setRouter (rts) {
-      // console.log('st', this.$router, this.$router.options, rts)
-      if (rts && rts.length) {
-        rts.forEach((r, index) => {
-          console.log(r)
-          let p = r.key === 'TASK' ? 'tasks' : r.path
-          let pt = r.key === 'TASK' ? '@/views/home/pages/basedata/costitem/Index.vue' : r.fPath
-          r = {
-            name: r.name,
-            path: p,
-            components: {
-              [r.key]: () => import(/* webpackChunkName: "任务" */ `${pt}`)
-            }
-          }
-          this.$router.options.routes[1].children.push(r)
-        })
-        this.$router.addRoutes(this.$router.options.routes)
-        console.log('result', this.$router.options.routes[1].children)
-      } else {
-        console.log('路由数据有误')
-      }
     }
   }
 }
