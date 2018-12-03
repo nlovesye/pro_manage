@@ -102,7 +102,6 @@ class Db {
                     } else {
                         resolve(rt)
                     }
-
                 })
             })
         })

@@ -8,7 +8,7 @@ export default {
   TASK: {
     TASK: () => import(/* webpackChunkName: "任务" */ '@/views/home/pages/index/Index.vue')
   },
-  SYSTEM_SET: {
-    SYSTEM_SET: () => import(/* webpackChunkName: "系统设置" */ '@/views/home/pages/system/set/Index.vue')
+  MENU_SET: {
+    MENU_SET: () => import(/* webpackChunkName: "系统设置" */ '@/views/home/pages/system/set/Index.vue')
   }
 }

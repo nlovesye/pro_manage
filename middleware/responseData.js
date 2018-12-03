@@ -17,7 +17,7 @@ module.exports = () => {
                 ...cover
             }
         }
-        ctx.arrResp = (obj = {}) => {
+        ctx.arrResp = (obj = []) => {
             ctx.response.body = {
                 success: true,
                 code: 200,
