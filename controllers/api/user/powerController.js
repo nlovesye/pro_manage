@@ -38,9 +38,9 @@ const POST_addMenu = async (ctx, next) => {
         sort,
         pKey
     } = ctx.request.body
-    depth = (depth || -1) + 1
     if (depth === -1) {
-        let target = await ctx.mdb.find('routers', {
+        depth = (depth || -1) + 1
+        let target = await ctx.mdb.findOne('routers', {
             $or: [{
                 key
             }, {
@@ -65,7 +65,10 @@ const POST_addMenu = async (ctx, next) => {
             children: []
         })
     } else {
-        let parent = await ctx.mdb.find('routers', { key: pKey })
+        depth = (depth || 0) + 1
+        let parent = await ctx.mdb.findOne('routers', {
+            key: pKey
+        })
         if (!parent) {
             ctx.errResp({
                 msg: '父级菜单不存在'
@@ -94,7 +97,7 @@ const POST_addMenu = async (ctx, next) => {
         }
         await ctx.mdb.update('routers', { key: pKey }, newObj)
     }
-    ctx.jsonResp({
+    await ctx.jsonResp({
         msg: '新增成功'
     })
 }

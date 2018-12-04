@@ -18,7 +18,8 @@ const POST_ = async (ctx, next) => {
         key: r.key,
         name: r.name,
         children: r.children,
-        sort: r.sort
+        sort: r.sort,
+        icon: r.icon
     }))
     if (user) {
         const userToken = {

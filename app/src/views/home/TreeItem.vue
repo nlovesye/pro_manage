@@ -4,7 +4,7 @@
     :name='node.key'
   >
     <template slot='title'>
-      <Icon type="ios-navigate"></Icon>
+      <Icon :type="node.icon || 'ios-navigate'"></Icon>
       <span v-if="!base.isCollepsed">{{node.name || '无名称'}}</span>
     </template>
     <tree-item
@@ -20,6 +20,7 @@
     :name='node.key'
   >
     <Icon type="md-home" v-if='node.key === "HOME"'></Icon>
+    <Icon :type="node.icon || 'ios-navigate'" v-else></Icon>
     <span v-if="!base.isCollepsed">{{node.name || ''}}</span>
   </menu-item>
 </template>
