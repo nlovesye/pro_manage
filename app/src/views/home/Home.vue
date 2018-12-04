@@ -157,7 +157,11 @@ export default {
       'setRouter'
     ]),
     init () {
-      // console.log('init')
+      console.log('init', this.$route)
+      let path = this.$route.path.split('/')
+      let key = path[path.length - 1]
+      let name = this.$route.name
+      this.selectNav(key, name)
     },
     /* token到期确定按钮事件 */
     timerOk () {
@@ -176,10 +180,13 @@ export default {
       }
     },
     /* 导航菜单点击事件 */
-    selectNav (routerKey) {
-      console.log('进入路由页面:', routerKey)
-      let target = this.getRouterObj(this.base.navs, routerKey)
-      // console.log('target', target)
+    selectNav (routerKey = '', name = '') {
+      console.log('进入路由页面:', routerKey || name, this.base.navs)
+      let target = this.getRouterObj(this.base.navs, 'key', routerKey) || this.getRouterObj(this.base.navs, 'name', name)
+      if (!target) {
+        console.log('未找到路由')
+        return false
+      }
       this.curPageName = target.name
       this.activeTab = routerKey
       if (!this.openPages.some(item => item.key === target.key)) {
@@ -191,13 +198,13 @@ export default {
       })
     },
     // 寻找对应路由
-    getRouterObj (arr = [], routerKey, rt = null) {
+    getRouterObj (arr = [], keyName, keyVal, rt = null) {
       arr.forEach(item => {
         if (item.children && item.children.length && !rt) {
-          rt = this.getRouterObj(item.children, routerKey, rt)
+          rt = this.getRouterObj(item.children, keyName, keyVal, rt)
         }
-        if (item.key === routerKey) {
-          rt = item
+        if (item[keyName] === keyVal) {
+          rt = rt || item
         }
       })
       return rt
@@ -220,7 +227,7 @@ export default {
     /* 点击tab */
     tabClick (routerKey) {
       if (this.activeTab !== name) {
-        let target = this.getRouterObj(this.base.navs, routerKey)
+        let target = this.getRouterObj(this.base.navs, 'key', routerKey)
         this.activeTab = routerKey
         this.activeMenu = routerKey
         this.curPageName = target.name
@@ -232,7 +239,7 @@ export default {
     }
   },
   mounted () {
-    // this.init()
+    this.init()
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {})

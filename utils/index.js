@@ -32,9 +32,22 @@ const md5hash = function (str) {
     return str
 }
 
+const findTreeObj = (arr = [], keyName, keyVal, rt = null) => {
+    arr.forEach(item => {
+        if (item.children && item.children.length && !rt) {
+            rt = findTreeObj(item.children, keyVal, rt)
+        }
+        if (item[keyName] === keyVal) {
+            rt = item
+        }
+    })
+    return rt
+}
+
 
 module.exports = {
     getRealPath,
     sha1hash,
-    md5hash
+    md5hash,
+    findTreeObj
 }

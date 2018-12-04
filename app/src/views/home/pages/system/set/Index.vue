@@ -22,15 +22,15 @@
         :label-width="100"
         inline
       >
+        <FormItem prop="key" label="菜单ID(key)">
+            <Input type="text" v-model="formData.key" placeholder="" :disabled="openType === 'edit'">
+            </Input>
+        </FormItem>
         <FormItem prop="sort" label="菜单排序值">
             <InputNumber :max="10" :min="1" v-model="formData.sort" style="width: 162px"></InputNumber>
         </FormItem>
         <FormItem prop="path" label="模块路径">
             <Input type="text" v-model="formData.path" placeholder="">
-            </Input>
-        </FormItem>
-        <FormItem prop="key" label="菜单唯一ID">
-            <Input type="text" v-model="formData.key" placeholder="">
             </Input>
         </FormItem>
         <FormItem prop="name" label="菜单名称">
@@ -122,6 +122,7 @@ export default {
     /* tree渲染 */
     renderTree (h, { root, node, data }) {
       const showAdd = (data.depth < 1)
+      const showEdit = data.depth !== -1
       const showRemove = false
       return h('span', {
         style: {
@@ -154,7 +155,7 @@ export default {
               }
             }
           }) : null,
-          h('Button', {
+          showEdit ? h('Button', {
             style: {
               marginLeft: '8px'
             },
@@ -168,7 +169,7 @@ export default {
                 this.editLevel(data)
               }
             }
-          }),
+          }) : null,
           showRemove ? h('Button', {
             style: {
               marginLeft: '8px'
@@ -199,7 +200,21 @@ export default {
     editLevel (data) {
       this.openType = 'edit'
       this.editTitle = '编辑菜单'
-      this.curItem = data
+      let parent = null
+      if (parseInt(data.depth, 10) === 0) {
+        parent = this.treeList[0]
+      } else {
+        parent = this.treeList[0].children.find(item => {
+          if (item.children && item.children.length) {
+            return item.children.some(i => i.key === data.key)
+          }
+        })
+      }
+      this.curItem = { ...parent }
+      this.formData = {
+        ...this.formData,
+        ...data
+      }
       this.showEdit = true
     },
     /* 删除 */
@@ -209,6 +224,7 @@ export default {
     // 弹窗ok
     async editOk (e) {
       let flag = await this.$refs.form.validate()
+      const APINAME = this.openType === 'add' ? 'addMenu' : 'editMenu'
       if (!flag) {
         this.$refs.editModal.buttonLoading = false
         return false
@@ -219,7 +235,7 @@ export default {
         pKey: this.curItem.key
       }
       try {
-        let res = await this.oAxios.post('/user/power/addMenu', reqData)
+        let res = await this.oAxios.post(`/user/power/${APINAME}`, reqData)
         if (res.success) {
           this.getTreeList()
           this.$Message.success('操作成功')

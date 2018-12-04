@@ -30,9 +30,10 @@ export default {
       state.userName = username
     },
     setRouter (state, payload) {
-      let navs = [payload._.$router.options.routes[1].children[0], ...payload.routers]
+      let rts = payload.routers.sort((a, b) => a.sort - b.sort)
+      let navs = [payload._.$router.options.routes[1].children[0], ...rts]
       // 将二级菜单提出home级路由
-      let dealRouters = payload.routers.reduce((rt, cur) => {
+      let dealRouters = rts.reduce((rt, cur) => {
         if (cur.children && cur.children.length) {
           return [...rt, ...cur.children]
         } else {
@@ -44,9 +45,9 @@ export default {
         payload._.$router.options.routes[1].children.push(r)
       })
       payload._.$router.addRoutes(payload._.$router.options.routes)
-      window.localStorage.setItem('routers', JSON.stringify(payload.routers))
+      window.localStorage.setItem('routers', JSON.stringify(rts))
       window.localStorage.setItem('navs', JSON.stringify(navs))
-      state.routers = [...payload.routers]
+      state.routers = [...rts]
       state.navs = navs
     },
     logout (state, payload) {

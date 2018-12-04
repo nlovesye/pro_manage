@@ -22,7 +22,8 @@ const GET_ = async (ctx, next) => {
         key: r.key,
         name: r.name,
         children: r.children,
-        depth: r.depth
+        depth: r.depth,
+        sort: r.sort
     }))
     ctx.arrResp(routers)
 }
@@ -63,11 +64,7 @@ const POST_addMenu = async (ctx, next) => {
             roles: ['admin'],
             children: []
         })
-        ctx.jsonResp({
-            msg: '新建成功'
-        })
     } else {
-        console.log('pKey', pKey)
         let parent = await ctx.mdb.find('routers', { key: pKey })
         if (!parent) {
             ctx.errResp({
@@ -96,13 +93,53 @@ const POST_addMenu = async (ctx, next) => {
             children: newChildren
         }
         await ctx.mdb.update('routers', { key: pKey }, newObj)
-        ctx.jsonResp({
-            msg: '新增成功'
-        })
     }
+    ctx.jsonResp({
+        msg: '新增成功'
+    })
+}
+
+// 编辑菜单
+const POST_editMenu = async (ctx, next) => {
+    let { key, sort, name, path, depth, pKey } = ctx.request.body
+    let target = null, newObj = null
+    if (depth === -1) {
+        target = await ctx.mdb.findOne('routers', { key })
+        if (!target) {
+            ctx.errResp({
+                msg: '不存在菜单项'
+            })
+            return
+        }
+        newObj = { ...target, key, sort, name, path }
+        console.log('newObj', newObj)
+    } else {
+        target = await ctx.mdb.findOne('routers', {
+            key: pKey
+        })
+        if (!target) {
+            ctx.errResp({
+                msg: '不存在菜单项'
+            })
+            return
+        }
+        newObj = { ...target }
+        newObj = newObj.children ? newObj.children.map(item => {
+            if (item.key === key) {
+                return { ...item, key, sort, name, path }
+            } else {
+                return item
+            }
+        }) : {...target}
+    }
+    await ctx.mdb.update('routers', { key: target.key }, newObj)
+    ctx.jsonResp({
+        msg: '操作成功'
+    })
 }
 
 module.exports = {
     GET_,
-    POST_addMenu
+    POST_addMenu,
+    POST_editMenu
 }
