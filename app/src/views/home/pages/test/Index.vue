@@ -5,14 +5,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Input, Icon } from 'iview'
 export default {
-  components: {
-    Form,
-    FormItem,
-    Input,
-    Icon
-  },
   data () {
     return {
       loading: false,
