@@ -81,24 +81,25 @@ export default {
             if (!rt.success) {
               throw new Error('账号或密码错误')
             }
+            await this.loginSucess({
+              res: rt.data,
+              _: this
+            })
+            await this.setRouter({
+              routers: rt.data.routers,
+              _: this
+            })
+            window.localStorage.setItem('username', rt.data.username)
+            window.localStorage.setItem('token', rt.data.token)
+            this.$Message.success('登陆成功')
+            this.$router.push('/home')
+            this.loading = false
           } catch (error) {
+            console.error(error)
             this.loading = false
             this.$Message.error(error.msg || rt.msg)
-            return
+            return false
           }
-          await this.loginSucess({
-            res: rt.data,
-            _: this
-          })
-          await this.setRouter({
-            routers: rt.data.routers,
-            _: this
-          })
-          window.localStorage.setItem('username', rt.data.username)
-          window.localStorage.setItem('token', rt.data.token)
-          this.$Message.success('登陆成功')
-          this.$router.push('/home')
-          this.loading = false
         } else {}
       })
     }

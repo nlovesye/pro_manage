@@ -42,8 +42,11 @@ export default {
       }, [])
       dealRouters = setComponents(dealRouters)
       dealRouters.forEach(r => {
-        payload._.$router.options.routes[1].children.push(r)
+        if (!payload._.$router.options.routes[1].children.some(item => item.key === r.key)) {
+          payload._.$router.options.routes[1].children.push(r)
+        }
       })
+      // console.log('tt', payload._.$router.options.routes)
       payload._.$router.addRoutes(payload._.$router.options.routes)
       window.localStorage.setItem('routers', JSON.stringify(rts))
       window.localStorage.setItem('navs', JSON.stringify(navs))
