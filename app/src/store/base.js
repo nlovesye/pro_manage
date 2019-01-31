@@ -1,4 +1,4 @@
-import routerComponent from '@/data/routerComponent'
+import routerComponent from '@/router/routerConfig'
 
 let navs = window.localStorage.getItem('navs') || '[]'
 // 默认路由

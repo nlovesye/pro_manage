@@ -157,7 +157,7 @@ export default {
       'setRouter'
     ]),
     init () {
-      console.log('init', this.$route)
+      // console.log('init', this.$route)
       let path = this.$route.path.split('/')
       let key = path[path.length - 1]
       let name = this.$route.name
