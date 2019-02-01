@@ -1,4 +1,4 @@
-import routerComponent from '@/router/routerConfig'
+import routerComponent from '@/router/routerComponent'
 
 let navs = window.localStorage.getItem('navs') || '[]'
 // 默认路由
@@ -30,7 +30,7 @@ export default {
       state.userName = username
     },
     setRouter (state, payload) {
-      let rts = payload.routers.sort((a, b) => a.sort - b.sort)
+      let rts = payload.routers.sort((a, b) => b.sort - a.sort)
       let navs = [payload._.$router.options.routes[1].children[0], ...rts]
       // 将二级菜单提出home级路由
       let dealRouters = rts.reduce((rt, cur) => {

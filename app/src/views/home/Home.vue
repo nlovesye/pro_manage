@@ -66,8 +66,8 @@
             class="root-ivu-tabs"
             v-if="openPages.length"
             type="card"
-            closable
             animated
+            closable
             :value="activeTab"
             @on-click="tabClick"
             @on-tab-remove="tabClose"
@@ -78,11 +78,12 @@
               v-for="item in openPages"
               :key="item.path"
               :name="item.key"
+              :closable="item.key !== 'HOME'"
             >
               <router-view class="page-router-view" :name="item.key" />
             </TabPane>
           </Tabs>
-          <div v-else>hello</div>
+          <div v-else>项目管理系统 v1.0</div>
         </Content>
       </Layout>
     </Layout>
