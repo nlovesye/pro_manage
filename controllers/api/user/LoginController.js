@@ -8,6 +8,13 @@ const POST_ = async (ctx, next) => {
         pwd
     } = ctx.request.body
     let user = await ctx.mdb.findOne('user', { username, pwd })
+    if (!user) {
+        ctx.errResp({
+            code: 401,
+            msg: '账号或密码错误'
+        })
+        return
+    }
     let routers = await ctx.mdb.find('routers', {
         $or: [{
             roles: user.role
