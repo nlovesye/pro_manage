@@ -23,7 +23,7 @@
         }
         return rt
     }
-    const listData = createData(50)
+    const listData = createData(2)
     let appendData = (target, data) => {
         for (let i = data.length; i--;) {
             let item = data[i]
