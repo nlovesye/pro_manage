@@ -18,8 +18,8 @@ class Db {
     }
 
     /* 连接数据库 */
-    connect() {
-        return new Promise((resolve, reject) => {
+    async connect() {
+        return await new Promise((resolve, reject) => {
             if (!this.dbClient) {
                 // console.log(2)
                 MongoClient.connect(config.dbUrl, (err, client) => {
@@ -58,10 +58,15 @@ class Db {
     /* 插入数据 */
 
     /* 查询数据 */
-    find(cName, json, projection = undefined) {
+    find(cName, json, projection = {}) {
         return new Promise((resolve, reject) => {
             this.connect().then(db => {
-                let rt = db.collection(cName).find(json, projection)
+                let rt
+                if (projection._limit) {
+                    rt = db.collection(cName).find(json, projection).skip(projection._skip || 0).limit(projection._limit)
+                } else {
+                    rt = db.collection(cName).find(json, projection)
+                }
                 rt.toArray((err, docs) => {
                     if (err) {
                         console.log('查询出错----')
@@ -91,7 +96,7 @@ class Db {
     /* 查询一条数据 */
 
     /* 更新数据 */
-    update(cName, targetJson, newJson) {
+    updateOne(cName, targetJson, newJson) {
         return new Promise((resolve, reject) => {
             this.connect().then(db => {
                 db.collection(cName).updateOne(targetJson, {

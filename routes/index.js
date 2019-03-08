@@ -18,6 +18,9 @@ const controllers = getRealPath(controFods, path.relative(UTIL_PATH, CONTRO_PATH
 // jwt验证
 router.all(`/${API_VESION}/api*`, authJwt())
 
+// 所有api接口
+let allApis = []
+
 // api接口控制器设置
 controllers.forEach(rPath => {
   // console.log('path-----', path.dirname(path.relative(path.resolve(__dirname, CONTRO_PATH), rPath)).replace('\\', '/'), path.basename(rPath).replace('Controller.js', ''))
@@ -31,12 +34,28 @@ controllers.forEach(rPath => {
     let method = c.split('_')[0].toLocaleLowerCase() || 'get'
     let cName = c.split('_')[1]
     let apiPath = routerPath.startsWith('/api') ? `/${API_VESION}${routerPath}/${cName}` : `${routerPath}/${cName}`
-    // console.log('apiPath', routerPath)
+    // console.log('apiPath', apiPath)
+    allApis.push({
+      apiPath,
+      controllerPath: `controllers/${routerPath}`
+    })
     try {
       router[method](apiPath, obj[c])
     } catch (err) {
       console.log('-------路由控制器方法错误-------')
     }
+  }
+})
+
+// log
+let len = allApis.length
+allApis.forEach((item, index, arr) => {
+  if (index === 0) {
+    console.log('-------api log start-------')
+  }
+  console.log(`api: ${item.apiPath}`)
+  if (index === len - 1) {
+    console.log('-------api log end-------')
   }
 })
 
