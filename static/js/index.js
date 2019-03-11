@@ -1,17 +1,4 @@
 (function () {
-    // const listData = [{
-    //     title: '标题一',
-    //     time: '2018-12-10'
-    // }, {
-    //     title: '标题二',
-    //     time: '2018-12-11'
-    // }, {
-    //     title: '标题三',
-    //     time: '2018-12-11'
-    // }, {
-    //     title: '标题四',
-    //     time: '2018-12-11'
-    // }]
     let createData = (count) => {
         let rt = []
         for (let i = count; i--;) {
@@ -51,13 +38,13 @@
             target.appendChild(li)
         })
     }
-    let oul = document.getElementById('oul')
+    // let oul = document.getElementById('oul')
 
-    let fragment = document.createDocumentFragment()
-    console.time('st')
-    appendData(fragment, listData)
-    oul.appendChild(fragment)
-    console.timeEnd('st')
+    // let fragment = document.createDocumentFragment()
+    // console.time('st')
+    // appendData(fragment, listData)
+    // oul.appendChild(fragment)
+    // console.timeEnd('st')
 
     // let fragment2 = document.createDocumentFragment()
     // console.time('st2')
@@ -65,5 +52,21 @@
     // oul.appendChild(fragment2)
     // console.timeEnd('st2')
 
+
+    function* generatorFun () {
+        let x = 'hello',
+            y = 'ns'
+            z = 'oh'
+        y = yield x
+        yield y
+        x = yield z
+        return 'yes.'
+    }
+
+    let gf = generatorFun()
+    console.log(gf.next())
+    console.log(gf.next(12345))
+    console.log(gf.next())
+    console.log(gf.next())
 
 })()
