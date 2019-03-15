@@ -1,5 +1,5 @@
 const _ = async (ctx, next) => {
-    await ctx.render('index', {
+    await ctx.render('demo', {
         title: 'nloves'
     })
 }
