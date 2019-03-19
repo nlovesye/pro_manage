@@ -4,6 +4,10 @@ block bk_head
     link(rel='stylesheet', href='/styles/index.css')
 
 block bk_content
-  h1= title
-  ul#oul
+  div.header
+    span= title
+    span#count
+  div.content
+    input#info(type='text')
+    button#btn 添加评论
   script(src="/js/demo.js")

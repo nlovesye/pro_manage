@@ -87,5 +87,6 @@ function onListening() {
     ? 'pipe ' + addr
     : '端口:' + addr.port;
   console.log('----服务启动成功----', bind)
+  console.log('see in: ', `http://localhost:${addr.port}`)
   debug('服务启动' + bind);
 }
