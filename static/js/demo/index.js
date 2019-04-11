@@ -27,6 +27,7 @@
                 if (_events[type] instanceof Array) {
                     let i = _events[type].length - 1
                     while (i) {
+                        console.log('1')
                         fn === _events[type][i] && _events[type].splice(i, 1)
                         i--
                     }
@@ -44,7 +45,6 @@
             document.getElementById('count').innerHTML = `评论数：${initCount}`
         }
         showCount()
-        Observe.regist('changeCount', showCount)
         Observe.regist('changeCount', showCount)
     }
 
