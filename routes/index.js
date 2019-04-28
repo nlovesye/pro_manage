@@ -1,23 +1,37 @@
 'use strict';
-
-const UTIL_PATH = '../utils'
-const CONTRO_PATH = '../controllers'
+const CONTRO_PATH = './controller'
 const router = require('koa-router')()
 const path = require('path')
 const fs = require('fs')
-const { getRealPath } = require(UTIL_PATH)
 const { API_VESION } = require('../config')
-// jwt中间件
-const authJwt = require('../middleware/auth/jwt')
-// 获取控制器目录文件
-let controFods = fs.readdirSync(path.resolve(__dirname, CONTRO_PATH))
-const controllers = getRealPath(controFods, path.relative(UTIL_PATH, CONTRO_PATH), [])
+// 验证中间件
+const auth = require('../extend/middleware/auth')
+const apiAuth = require('../extend/middleware/auth/api')
 
-// console.log('controllers------------:', controllers, path.resolve(controllers[0]))
+const getRealPath = (fods, basePath, target) => {
+  return fods && fods.length ? fods.reduce((rt, cur) => {
+      let realPath = path.resolve(__dirname, basePath, cur)
+      // console.log(realPath)
+      let f = fs.statSync(realPath)
+      if (f.isDirectory()) { //如果是目录
+          let deepPath = basePath + `/${cur}`
+          let cFiles = getRealPath(fs.readdirSync(realPath), deepPath, target)
+          return [...rt, ...cFiles]
+      } else if (f.isFile() && cur.endsWith('Controller.js')) { //如果是 Controller.js 结尾的文件
+          return [...rt, realPath]
+      } else { //既不是目录也不是 Controller.js 结尾的文件
+          return [...rt]
+      }
+  }, target) : []
+}
 
 // jwt验证
-router.all(`/${API_VESION}/api*`, authJwt())
+router.all(`/`, auth())
+router.all(`/${API_VESION}/api*`, apiAuth())
 
+// 获取控制器目录文件
+let controFods = fs.readdirSync(path.resolve(__dirname, CONTRO_PATH))
+const controllers = getRealPath(controFods, CONTRO_PATH, [])
 // 所有api接口
 let allApis = []
 
