@@ -1,4 +1,4 @@
-const config = require('../config/db')
+const config = require('../../config/db')
 const MongoClient = require('mongodb').MongoClient
 
 /* Mongodb数据库类 */

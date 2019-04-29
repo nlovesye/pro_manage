@@ -1,6 +1,6 @@
 const CONFIG = {
     dbUrl: 'mongodb://localhost:27017/',
-    dbName: 'pro_manage'
+    dbName: 'nloves_server'
 }
 
 module.exports = CONFIG

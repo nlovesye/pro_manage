@@ -5,10 +5,7 @@ module.exports = () => async (ctx, next) => {
         if (token === 'Basic token') {
             await next()
         } else {
-            ctx.errResp({
-                code: 401,
-                msg: '登录token错误'
-            })
+            ctx.retErr('登录token错误')
         }
     } else {
         await next()
