@@ -10,6 +10,7 @@ const cors = require('koa2-cors')
 const db = require('./extend/db')
 const setResponse = require('./extend/middleware/response')
 const connectDb = require('./extend/middleware/mongoDB')
+const setService = require('./extend/middleware/setService')
 const koaJwt = require('koa-jwt')
 
 const index = require('./routes/index')
@@ -41,6 +42,7 @@ app.use(koaJwt({ secret: app.secret }).unless({
 app.use(setResponse())
 // 连接mongoDB数据库
 app.use(connectDb(db))
+app.use(setService())
 
 app.use(views(__dirname + '/views', {
   extension: 'pug'

@@ -3,10 +3,9 @@ const CONTRO_PATH = './controller'
 const router = require('koa-router')()
 const path = require('path')
 const fs = require('fs')
-const { API_VESION } = require('../config')
+// const { API_VESION } = require('../config')
 // 验证中间件
 const auth = require('../extend/middleware/auth')
-const apiAuth = require('../extend/middleware/auth/api')
 
 const getRealPath = (fods, basePath, target) => {
   return fods && fods.length ? fods.reduce((rt, cur) => {
@@ -27,7 +26,6 @@ const getRealPath = (fods, basePath, target) => {
 
 // jwt验证
 router.all(`/`, auth())
-router.all(`/${API_VESION}/api*`, apiAuth())
 
 // 获取控制器目录文件
 let controFods = fs.readdirSync(path.resolve(__dirname, CONTRO_PATH))
@@ -47,7 +45,7 @@ controllers.forEach(rPath => {
   for (let c in obj) {
     let method = c.split('_')[0].toLocaleLowerCase() || 'get'
     let cName = c.split('_')[1]
-    let apiPath = routerPath.startsWith('/api') ? `/${API_VESION}${routerPath}/${cName}` : `${routerPath}/${cName}`
+    let apiPath = `${routerPath}/${cName}`
     // console.log('apiPath', apiPath)
     allApis.push({
       apiPath,

@@ -1,18 +1,19 @@
 module.exports = () => {
     return async (ctx, next) => {
-        ctx.retErr = ctx.retErr || ((msg = '服务器错误！', cover = {}) => {
+        ctx.retErr = ctx.retErr || ((cover = {}) => {
+            // ctx.response.status = cover.code || 500
             ctx.response.body = {
+                status: 500,
+                message: '服务器错误！',
                 success: false,
-                code: 500,
-                msg,
                 ...cover
             }
         })
         ctx.retJson = ctx.retJson || ((data = "", cover = {}) => {
             ctx.response.body = {
+                status: 200,
+                message: 'success!',
                 success: true,
-                code: 200,
-                msg: 'success!',
                 data,
                 ...cover
             }

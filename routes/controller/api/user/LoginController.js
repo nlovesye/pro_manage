@@ -5,13 +5,13 @@ const moment = require('moment')
 const POST_ = async (ctx, next) => {
     let {
         username,
-        password
+        pwd
     } = ctx.request.body
-    let user = await ctx.mdb.findOne('user', { username, password })
+    let user = await ctx.mdb.findOne('user', { username, pwd })
     if (!user) {
-        ctx.retErr({
-            message: '用户名或密码错误',
-            status: 401
+        ctx.errResp({
+            code: 401,
+            msg: '账号或密码错误'
         })
         return
     }
@@ -40,12 +40,12 @@ const POST_ = async (ctx, next) => {
             token,
             routers
         }, {
-            message: '登陆成功'
+            msg: '登陆成功'
         })
     } else {
-        ctx.retErr({
+        ctx.errResp({
             code: 401,
-            message: '账号或密码错误'
+            msg: '账号或密码错误'
         })
     }
 }
