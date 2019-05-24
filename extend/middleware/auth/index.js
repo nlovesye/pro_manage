@@ -1,20 +1,28 @@
-const koaJwt = require('koa-jwt')
+const jwt = require('jsonwebtoken')
 
 module.exports = () => async (ctx, next) => {
-    let token = ((ctx.request.body && ctx.request.body.access_token) || (ctx.query && ctx.query.access_token) || (ctx.header['authorization']))
-        // console.log('jwtconsole', ctx.request.body, ctx.query.access_token, ctx.header['x-access-token'])
+    const token = ((ctx.request.body && ctx.request.body.access_token) || (ctx.query && ctx.query.access_token) || (ctx.header['authorization']))
+    // console.log('jwtconsole', ctx.request.body, ctx.query.access_token, ctx.header['x-access-token'])
     if (ctx.url.startsWith('/user/login')) {//如果是用户登录
         if (token === 'Basic token') {
             await next()
         } else {
             ctx.retErr({
-                code: 401,
-                message: '登录token错误'
+                status: 401,
+                message: '登录token错误!'
             })
         }
     } else {
-        // const auth = koaJwt.decode(token.split(' ')[1], 'jwt_nloves')
-        console.log('token', token)
-        await next()
+        try {
+            const authInfo = jwt.verify(token, 'secret')
+            // console.log('token', token, authInfo, jwt.decode(token))
+            await next()
+        } catch (error) {
+            // console.log(error)
+            ctx.retErr({
+                status: 401,
+                message: 'token验证失败!'
+            })
+        }
     }
 };

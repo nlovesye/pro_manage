@@ -4,8 +4,6 @@ const router = require('koa-router')()
 const path = require('path')
 const fs = require('fs')
 // const { API_VESION } = require('../config')
-// 验证中间件
-const auth = require('../extend/middleware/auth')
 
 const getRealPath = (fods, basePath, target) => {
   return fods && fods.length ? fods.reduce((rt, cur) => {
@@ -23,9 +21,6 @@ const getRealPath = (fods, basePath, target) => {
       }
   }, target) : []
 }
-
-// jwt验证
-router.all(`/`, auth())
 
 // 获取控制器目录文件
 let controFods = fs.readdirSync(path.resolve(__dirname, CONTRO_PATH))

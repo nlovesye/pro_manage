@@ -11,16 +11,13 @@ const db = require('./extend/db')
 const setResponse = require('./extend/middleware/response')
 const connectDb = require('./extend/middleware/mongoDB')
 const setService = require('./extend/middleware/setService')
-const koaJwt = require('koa-jwt')
-
-const index = require('./routes/index')
+const auth = require('./extend/middleware/auth')
+const router = require('./routes')
 
 // error handler
 onerror(app, {
   text: 'error!!!'
 })
-
-app.secret = 'jwt_nloves'
 
 // middlewares
 app.use(cors({
@@ -35,15 +32,16 @@ app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/static'))
 
-// koa-jwt验证
-app.use(koaJwt({ secret: app.secret }).unless({
-  path: [/^\//, /^\/v1.0\/api\/user\/login/]
-}))
+// 返回数据格式中间件
 app.use(setResponse())
+// jwt验证
+app.use(auth())
 // 连接mongoDB数据库
 app.use(connectDb(db))
+// service中间件
 app.use(setService())
 
+// 视图模板
 app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
@@ -58,7 +56,7 @@ app.use(async (ctx, next) => {
 
 
 // 注入路由控制器
-app.use(index.routes(), index.allowedMethods())
+app.use(router.routes(), router.allowedMethods())
 
 // error-handling
 app.on('error', async (err, ctx) => {

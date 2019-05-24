@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const moment = require('moment')
 
 // 用户登录
 const POST_ = async (ctx, next) => {
@@ -10,7 +9,7 @@ const POST_ = async (ctx, next) => {
     const user = await ctx.service.user.findUser({ username, password })
     if (user) {
         const token = jwt.sign({
-            iss: 'ns',
+            iss: username,
             exp: Math.floor(Date.now() / 1000) + (60 * 60),
             iat: Date.now()
         }, 'secret')
