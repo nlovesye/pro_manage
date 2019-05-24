@@ -1,5 +1,3 @@
-const registService = require('../../service/user/RegistService')
-
 const fs = require('fs')
 const path = require('path')
 

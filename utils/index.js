@@ -27,7 +27,6 @@ const findTreeObj = (arr = [], keyName, keyVal, rt = null) => {
 
 
 module.exports = {
-    getRealPath,
     sha1hash,
     md5hash,
     findTreeObj

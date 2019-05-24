@@ -10,7 +10,7 @@ const GET_ = async (ctx, next) => {
 }
 
 const POST_ = async (ctx, next) => {
-    ctx.jsonResp({
+    ctx.retJson({
         info: 'hello'
     })
 }

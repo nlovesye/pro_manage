@@ -7,45 +7,21 @@ const POST_ = async (ctx, next) => {
         username,
         password
     } = ctx.request.body
-    let user = await ctx.mdb.findOne('user', { username, password })
-    if (!user) {
-        ctx.retErr({
-            message: '用户名或密码错误',
-            status: 401
-        })
-        return
-    }
-    let routers = await ctx.mdb.find('routers', {
-        $or: [{
-            roles: user.role
-        }]
-    })
-    routers = routers.map(r => ({
-        path: r.path,
-        key: r.key,
-        name: r.name,
-        children: r.children,
-        sort: r.sort,
-        icon: r.icon
-    }))
+    const user = await ctx.service.user.findUser({ username, password })
     if (user) {
-        const userToken = {
-            username,
-            loginTime: Date.now()
-        }
-        const expiresIn = moment().add(7, 'days').format('x')
-        const token = jwt.sign(userToken, ctx.app.secret, { expiresIn })
-        ctx.jsonResp({
-            username: user.username,
+        const token = jwt.sign({
+            iss: 'ns',
+            exp: Math.floor(Date.now() / 1000) + (60 * 60),
+            iat: Date.now()
+        }, 'secret')
+        // console.log('token', token)
+        ctx.retJson({
             token,
-            routers
-        }, {
-            message: '登陆成功'
+            username
         })
     } else {
         ctx.retErr({
-            code: 401,
-            message: '账号或密码错误'
+            message: '用户名或密码错误!'
         })
     }
 }

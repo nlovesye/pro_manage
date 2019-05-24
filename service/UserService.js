@@ -1,4 +1,4 @@
-// 注册用户
+// 添加用户
 const addUser = async (ctx, next, user) => {
     if (user) {
         const u = await ctx.mdb.findOne('user', { username: user.username })
@@ -17,9 +17,24 @@ const addUser = async (ctx, next, user) => {
     }
 }
 
+// 匹配查找用户
+const findUser = async (ctx, next, payload) => {
+    try {
+        const user = await ctx.mdb.findOne('user', payload)
+        if (user) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     namespace: 'user',
     service: {
-        addUser
+        addUser,
+        findUser
     }
 }
