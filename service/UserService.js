@@ -1,3 +1,17 @@
+// 匹配查找用户
+const findUser = async (ctx, next, payload) => {
+    try {
+        const user = await ctx.mdb.findOne('user', payload)
+        if (user) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 // 添加用户
 const addUser = async (ctx, next, user) => {
     if (user) {
@@ -14,20 +28,6 @@ const addUser = async (ctx, next, user) => {
         ctx.retErr({
             message: '用户名和密码必填'
         })
-    }
-}
-
-// 匹配查找用户
-const findUser = async (ctx, next, payload) => {
-    try {
-        const user = await ctx.mdb.findOne('user', payload)
-        if (user) {
-            return true
-        } else {
-            return false
-        }
-    } catch (error) {
-        return false
     }
 }
 
