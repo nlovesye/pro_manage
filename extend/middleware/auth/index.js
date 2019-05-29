@@ -18,11 +18,17 @@ module.exports = () => async (ctx, next) => {
             // console.log('token', token, authInfo, jwt.decode(token))
             await next()
         } catch (error) {
-            // console.log(error)
-            ctx.retErr({
-                status: 401,
-                message: 'token验证失败!'
-            })
+            if (error.name === 'TokenExpiredError' && error.message === 'jwt expired') {
+                ctx.retErr({
+                    status: 401,
+                    message: 'token已过期，请重新获取token!'
+                })
+            } else {
+                ctx.retErr({
+                    status: 401,
+                    message: 'token验证失败!'
+                })
+            }
         }
     }
 };

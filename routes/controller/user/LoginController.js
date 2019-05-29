@@ -8,15 +8,17 @@ const POST_ = async (ctx, next) => {
     } = ctx.request.body
     const user = await ctx.service.user.findUser({ username, password })
     if (user) {
+        const exp = Math.floor(Date.now() / 1000) + (60 * 60);
         const token = jwt.sign({
             iss: username,
-            exp: Math.floor(Date.now() / 1000) + (60 * 60),
+            exp,
             iat: Date.now()
         }, 'secret')
         // console.log('token', token)
         ctx.retJson({
             token,
             username,
+            exp,
             permissions: [
                 {
                     title: '系统配置',
