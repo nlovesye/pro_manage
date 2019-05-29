@@ -16,7 +16,30 @@ const POST_ = async (ctx, next) => {
         // console.log('token', token)
         ctx.retJson({
             token,
-            username
+            username,
+            permissions: [
+                {
+                    title: '系统配置',
+                    path: 'system',
+                    code: 1,
+                    depth: 0,
+                    parent: 0
+                },
+                {
+                    title: '权限管理',
+                    path: 'system_permissions',
+                    code: 101,
+                    depth: 1,
+                    parent: 1
+                },
+                {
+                    title: '测试',
+                    path: 'test',
+                    code: 2,
+                    depth: 0,
+                    parent: 0
+                },
+            ]
         })
     } else {
         ctx.retErr({
