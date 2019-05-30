@@ -18,6 +18,7 @@ module.exports = () => async (ctx, next) => {
             // console.log('token', token, authInfo, jwt.decode(token))
             await next()
         } catch (error) {
+            console.log('auth>>>>>>>', error)
             if (error.name === 'TokenExpiredError' && error.message === 'jwt expired') {
                 ctx.retErr({
                     status: 401,
