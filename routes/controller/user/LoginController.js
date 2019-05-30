@@ -25,21 +25,24 @@ const POST_ = async (ctx, next) => {
                     path: 'system',
                     code: 1,
                     depth: 0,
-                    parent: 0
+                    parent: 0,
+                    type: 1
                 },
                 {
                     title: '权限管理',
                     path: 'system_permissions',
                     code: 101,
                     depth: 1,
-                    parent: 1
+                    parent: 1,
+                    type: 1
                 },
                 {
                     title: '测试',
                     path: 'test',
                     code: 2,
                     depth: 0,
-                    parent: 0
+                    parent: 0,
+                    type: 1
                 },
             ]
         })
