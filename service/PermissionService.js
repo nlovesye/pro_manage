@@ -15,6 +15,16 @@ const existed = async (ctx, next, validArr) => {
     }
 }
 
+// 获取permissions列表
+const get = async (ctx, next, payload) => {
+    try {
+        const ret = await ctx.mdb.find(coln, payload)
+        return ret
+    } catch (error) {
+        return '系统错误!'
+    }
+}
+
 // 新增一条权限
 const add = async (ctx, next, { icon, type, depth, parent, ...rest }) => {
     try {
@@ -26,14 +36,37 @@ const add = async (ctx, next, { icon, type, depth, parent, ...rest }) => {
         }
         const isExist = await existed(ctx, next, validArr)
         if (isExist) {
-            ctx.retErr({
+            return {
                 message: 'CODE或名称或路径已存在!'
-            })
+            };
         } else {
-            return await ctx.mdb.insert(coln, { icon, type, depth, parent, ...rest })
+            await ctx.mdb.insert(coln, { icon, type, depth, parent, ...rest })
+            return true
         }
     } catch (error) {
-        console.log(error)
+        return {
+            message: '服务器错误!'
+        };
+    }
+}
+
+// 根据CODE更新权限
+const update = async (ctx, next, { code, title, path, icon }) => {
+    try {
+        await ctx.mdb.updateOne(coln, { code }, { $set: { title, path, icon } })
+        return true
+    } catch (error) {
+        return { message: '服务器错误!' }
+    }
+}
+
+// 根据CODE删除权限
+const del = async (ctx, next, { code }) => {
+    try {
+        await ctx.mdb.removeOne(coln, { code })
+        return true
+    } catch (error) {
+        return { message: '服务器错误!' } 
     }
 }
 
@@ -41,6 +74,9 @@ module.exports = {
     namespace: 'permission',
     service: {
         existed,
-        add
+        add,
+        update,
+        get,
+        del
     }
 }

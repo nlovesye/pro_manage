@@ -14,37 +14,13 @@ const POST_ = async (ctx, next) => {
             exp,
             iat: Date.now()
         }, 'secret')
+        const permissions = await ctx.service.permission.get({})
         // console.log('token', token)
         ctx.retJson({
             token,
             username,
             exp,
-            permissions: [
-                {
-                    title: '系统配置',
-                    path: 'system',
-                    code: 1,
-                    depth: 0,
-                    parent: 0,
-                    type: 1
-                },
-                {
-                    title: '权限管理',
-                    path: 'system_permissions',
-                    code: 101,
-                    depth: 1,
-                    parent: 1,
-                    type: 1
-                },
-                {
-                    title: '测试',
-                    path: 'test',
-                    code: 2,
-                    depth: 0,
-                    parent: 0,
-                    type: 1
-                },
-            ]
+            permissions
         })
     } else {
         ctx.retErr({
