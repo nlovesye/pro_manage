@@ -53,7 +53,7 @@ const add = async (ctx, next, { icon, type, depth, parent, ...rest }) => {
 // 根据CODE更新权限
 const update = async (ctx, next, { code, title, path, icon }) => {
     try {
-        await ctx.mdb.updateOne(coln, { code }, { $set: { title, path, icon } })
+        await ctx.mdb.updateOne(coln, { code }, { title, path, icon })
         return true
     } catch (error) {
         return { message: '服务器错误!' }
@@ -63,7 +63,7 @@ const update = async (ctx, next, { code, title, path, icon }) => {
 // 根据CODE删除权限
 const del = async (ctx, next, { code }) => {
     try {
-        await ctx.mdb.removeOne(coln, { code })
+        await ctx.mdb.remove(coln, { code })
         return true
     } catch (error) {
         return { message: '服务器错误!' } 

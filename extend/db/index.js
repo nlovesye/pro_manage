@@ -103,6 +103,7 @@ class Db {
                     $set: newJson
                 }, (err, rt) => {
                     if (err) {
+                        console.log(err)
                         reject(err)
                     } else {
                         resolve(rt)

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 module.exports = () => async (ctx, next) => {
     const token = ((ctx.request.body && ctx.request.body.access_token) || (ctx.query && ctx.query.access_token) || (ctx.header['authorization']))
     // console.log('jwtconsole', ctx.request.body, ctx.query.access_token, ctx.header['x-access-token'])
-    if (ctx.url.startsWith('/user/login')) {//如果是用户登录
+    if (ctx.url.startsWith('/user/login')) { // 如果是用户登录
         if (token === 'Basic token') {
             await next()
         } else {
@@ -12,6 +12,8 @@ module.exports = () => async (ctx, next) => {
                 message: '登录token错误!'
             })
         }
+    } else if (ctx.url.startsWith('/user/regist')) { // 如果是注册
+        await next()
     } else {
         try {
             const authInfo = jwt.verify(token, 'secret')
