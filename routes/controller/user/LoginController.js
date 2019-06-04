@@ -14,8 +14,12 @@ const POST_ = async (ctx, next) => {
             exp,
             iat: Date.now()
         }, 'secret')
-        const permissions = await ctx.service.permission.get({})
-        // console.log('token', token)
+        const userPermissions = await ctx.service.user.getPermissions({ username })
+        let permissions = await ctx.service.permission.get({})
+        if (username !== 'admin') {
+            permissions = permissions.filter(item => userPermissions && userPermissions.some(code => code === item.code))
+        }
+        // console.log('token', userPermissions)
         ctx.retJson({
             token,
             username,

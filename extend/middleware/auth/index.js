@@ -16,7 +16,8 @@ module.exports = () => async (ctx, next) => {
         await next()
     } else {
         try {
-            const authInfo = jwt.verify(token, 'secret')
+            let authInfo = jwt.verify(token, 'secret')
+            ctx.userInfo = ctx.userInfo || authInfo
             // console.log('token', token, authInfo, jwt.decode(token))
             await next()
         } catch (error) {
