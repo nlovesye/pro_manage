@@ -11,6 +11,7 @@ const db = require('./extend/db')
 const setResponse = require('./extend/middleware/response')
 const connectDb = require('./extend/middleware/mongoDB')
 const setService = require('./extend/middleware/setService')
+const catchFun = require('./extend/middleware/catchFun')
 const auth = require('./extend/middleware/auth')
 const router = require('./routes')
 
@@ -40,6 +41,8 @@ app.use(auth())
 app.use(connectDb(db))
 // service中间件
 app.use(setService())
+// catch中间件
+app.use(catchFun())
 
 // 视图模板
 app.use(views(__dirname + '/views', {

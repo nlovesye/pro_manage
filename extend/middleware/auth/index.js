@@ -25,7 +25,7 @@ module.exports = () => async (ctx, next) => {
             if (error.name === 'TokenExpiredError' && error.message === 'jwt expired') {
                 ctx.retErr({
                     status: 401,
-                    message: 'token已过期，请重新获取token!'
+                    message: 'token已过期，请退出重新登录！'
                 })
             } else {
                 ctx.retErr({
